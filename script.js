@@ -1,12 +1,22 @@
 var display = document.querySelector(".calculator-input");
-console.log(display);
+var screen = document.querySelector(".calculator-screen");
 
 var keys = document.querySelector(".calculator-keys");
-console.log(keys);
 
-var displayValue = "";
+var displayValue = "0";
+var firstValue = null;
+var operator = null;
+var waitFlag = false;
 
-updateDisplay();
+screen.value = "";
+
+function updateScreen(param){
+    screen.value += param;
+}
+
+function screenClear(){
+    screen.value = "";
+}
 
 function updateDisplay(){
     display.value = displayValue;
@@ -18,20 +28,83 @@ keys.addEventListener("click", function(e){
         return ; 
     if(element.className == "operator" || element.className == "operator equal-sign")
     {
-        console.log(element.value);
+        inputOperator(element.value);
         return;
     }
     if(element.className == "clear")
     {
-        console.log(element.value);
+        inputClear();
+        updateDisplay();
         return;
     }
     if(element.className == "decimal")
     {
-        console.log(element.value);
+        inputDecimal();
+        updateDisplay();
         return;
     }
-    
+    inputNumber(element.value);
+    updateDisplay(); 
 });
 
- 
+
+function inputNumber(number){
+    if(waitFlag === true)
+    {
+        displayValue = "0";
+        waitFlag = false;
+    }
+   displayValue = displayValue === '0'? number : displayValue + number;
+   updateScreen(number);
+}
+
+function inputDecimal(){
+    if(!displayValue.includes("."))
+        displayValue += '.';
+}
+
+function inputClear(){
+    displayValue = "0";
+    firstValue = null;
+    operator = null;
+    waitFlag = false;
+    screenClear();
+}
+
+function inputOperator(op){
+    var value = parseFloat(displayValue);
+    updateScreen(op);
+    if(firstValue === null){
+        firstValue = value; 
+    }
+    else if(operator && waitFlag === false){
+        screenClear();
+        const result = calculate(firstValue, operator, value);
+        displayValue = String(result);
+        firstValue = displayValue;
+        updateScreen(result);
+        updateDisplay();
+    }
+    waitFlag = true;
+    operator = op;
+}
+
+function calculate(fir, ope, val){
+    var total;
+    if(ope === '+'){
+        total =  parseFloat(fir) + parseFloat(val);
+    }
+    else if(ope === '-'){
+        total = fir - val;
+    }
+    else if(ope === '*'){
+        total = fir * val;
+    }
+    else if(ope === '/'){
+        total = fir / val;
+    }
+    else{
+        total = val;
+    }
+    return parseFloat(total.toFixed(4));
+}

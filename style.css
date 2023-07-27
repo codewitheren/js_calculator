@@ -33,6 +33,17 @@ body{
     padding-right: 25px;
 }
 
+.calculator-screen{
+    width: 100%;
+    font-size: 2rem;
+    height: 35px;
+    border: none;
+    background-color:white;
+    color: rgba(56, 56, 56, 0.321);
+    text-align: right;
+    padding-right: 27px;
+}
+
 button{
     height: 50px;
     background-color:lightgray;
