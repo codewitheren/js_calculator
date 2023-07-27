@@ -7,15 +7,16 @@ var displayValue = "0";
 var firstValue = null;
 var operator = null;
 var waitFlag = false;
+var okey = false;
 
-screen.value = "";
+screen.value = "0";
 
 function updateScreen(param){
-    screen.value += param;
+    screen.value = screen.value === '0'? param : screen.value + param;
 }
 
 function screenClear(){
-    screen.value = "";
+    screen.value = "0";
 }
 
 function updateDisplay(){
@@ -54,13 +55,24 @@ function inputNumber(number){
         displayValue = "0";
         waitFlag = false;
     }
-   displayValue = displayValue === '0'? number : displayValue + number;
-   updateScreen(number);
+    if(okey && !screen.value.includes('+') && !screen.value.includes('-') && !screen.value.includes('*') && !screen.value.includes('/')){
+        screenClear();
+        okey = false;
+    }
+    displayValue = displayValue === '0'? number : displayValue + number;
+    updateScreen(number);
+
 }
 
 function inputDecimal(){
-    if(!displayValue.includes("."))
+    if(!displayValue.includes(".")){
         displayValue += '.';
+    }
+    if(screen.value === '0'){
+        updateScreen('0.');
+    }
+    else if(!screen.value.includes(".") || screen.value.includes('+') || screen.value.includes('-') || screen.value.includes('*') || screen.value.includes('/'))
+        updateScreen('.');
 }
 
 function inputClear(){
@@ -84,6 +96,7 @@ function inputOperator(op){
         firstValue = displayValue;
         updateScreen(result);
         updateDisplay();
+        okey = true;
     }
     waitFlag = true;
     operator = op;
